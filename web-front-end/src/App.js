@@ -1,26 +1,27 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component, Fragment} from 'react';
+import Header from './Header';
+import Spinner from './Spinner';
 
 class App extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {isLoading: true}
+  }
+
+  componentDidMount() {
+    setTimeout(function() {
+      this.setState({isLoading: false})
+    }.bind(this), 1000)
+  }
+
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      this.state.isLoading ? <Spinner /> : 
+      <Fragment >
+          <Header />
+      </Fragment>
     );
   }
 }
