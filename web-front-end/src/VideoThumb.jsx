@@ -1,28 +1,58 @@
 import React, { Component } from "react";
-import './common.css';
+import "./common.css";
+import Spinner from "./Spinner";
 
 export default class VideoThumb extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLoading: true,
+      content: this.props.content
+    };
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({ isLoading: false });
+    }, 3000);
+  }
+
   render() {
-    return (
+    const content = this.state.content;
+    return this.state.isLoading ? (
+      <div
+        className="col-md-2 col-sm-12 p-2 d-flex justify-content-center align-items-center"
+        style={{ minHeight: "250px", maxHeight: "250px" }}
+      >
+        <Spinner size={{ size: "small" }} />
+      </div>
+    ) : (
       <div
         className="col-md-2 col-sm-12 p-2 "
         style={{ minHeight: "250px", maxHeight: "250px" }}
       >
-      <div className="thumb-parent">
-        <img
-          className=""
-          style={{ minHeight: "150px", maxHeight: "150px", width: "100%" }}
-          src="https://resize.indiatvnews.com/en/resize/newbucket/715_-/2018/02/propose-1517999844.jpg"
-          alt=""
-        />
-        <div className="time-float">
-            <p>18.45</p>
+        <div className="thumb-parent">
+          <img
+            className=""
+            style={{ minHeight: "150px", maxHeight: "150px", width: "100%" }}
+            src={content.imageUrl}
+            alt=""
+          />
+          <div className="time-float">
+            <p>{content.videoTime}</p>
+          </div>
         </div>
-      </div>
-      <div className="" style={{lineHeight: 0, fontSize: "14px"}}>
-            <h6 className="wrap-me">LaLa Land Lorem asflkj ipsum dolor sit amet consectetur adipisicing elit. Dolorem cupiditate alias doloremque illo assumenda consectetur ullam eligendi et. Ad iste molestiae possimus reiciendis blanditiis quia recusandae vero voluptatum ratione maxime?</h6>
-            <p className="mb-4"><span className="text-default">Romantic</span></p>
-            <p className=""><span className="text-default dot-after">30 views </span><span className="text-default"> 3 days ago</span></p>
+        <div className="" style={{ lineHeight: 0, fontSize: "14px" }}>
+          <h6 className="wrap-me">{content.videoName}</h6>
+          <p className="mb-4">
+            <span className="text-default">{content.category}</span>
+          </p>
+          <p className="">
+            <span className="text-default dot-after">
+              {content.views} views
+            </span>
+            <span className="text-default">{content.uploadedOn}</span>
+          </p>
         </div>
       </div>
     );

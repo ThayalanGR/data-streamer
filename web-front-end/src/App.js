@@ -18,7 +18,7 @@ class App extends Component {
 
   render() {
     return (
-      this.state.isLoading ? <Spinner /> : 
+      this.state.isLoading ? <Spinner size={{size: "large"}} /> : 
       <Fragment >
           <Header />
       </Fragment>
