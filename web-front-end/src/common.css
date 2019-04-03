@@ -9,9 +9,9 @@
 }
 
 .btn-outline-success {
-  border: 2px solid #40f789!important;
-  background-color: transparent!important;
-  color: #4af18d!important;
+  border: 2px solid #40f789 !important;
+  background-color: transparent !important;
+  color: #4af18d !important;
 }
 
 .dot-after::after {
@@ -28,9 +28,6 @@
   line-height: 1.8em;
 }
 
-.thumb-parent {
-  /* position: relative; */
-}
 
 .time-float {
   right: 0;
@@ -72,4 +69,27 @@
   .form-control {
     width: 80%;
   }
+}
+
+
+.files input {
+  opacity: 0;
+  width: 100% !important;
+  height: 97vh;
+}
+
+
+.files {
+  position: relative
+}
+
+
+.filesbefore {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  width: 100%;
+  height: 97vh;
 }

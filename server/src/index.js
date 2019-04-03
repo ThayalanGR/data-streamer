@@ -4,6 +4,7 @@ import middlewares from './config/middlewares';
 import dbconfig from './config/dbconfig';
 import {
     authRoute,
+    fileRoute
 } from './modules';
 
 //constants
@@ -17,7 +18,7 @@ middlewares(app);
 dbconfig();
 
 //routes
-app.use('/api', [authRoute]);
+app.use('/api', [authRoute, fileRoute]);
 
 //listen on port
 app.listen(PORT, (err) => {

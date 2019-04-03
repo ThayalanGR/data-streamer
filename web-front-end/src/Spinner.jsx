@@ -1,9 +1,7 @@
 import React from "react";
 
 const Spinner = props => {
-  console.log(props);
   let isSmall = props.size.size === "small" ? false : true;
-  console.log(isSmall)
   return isSmall ? (
     <>
       <div
