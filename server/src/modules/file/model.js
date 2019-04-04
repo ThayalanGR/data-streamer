@@ -17,6 +17,14 @@ const fileSchema = Schema({
         type: String,
         required: true
     },
+    thumbnail: {
+        type: String,
+        required: false
+    },
+    duration: {
+        type: String,
+        required: false
+    },
     uploadedOn: {
         type: Date,
         default: Date.now()

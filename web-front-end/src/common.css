@@ -28,6 +28,19 @@
   line-height: 1.8em;
 }
 
+.list-group-item {
+  border: 0 !important;
+}
+
+.card-me {
+  width: 350px;
+  padding: 10px;
+  z-index: 1000;
+  position: relative;
+}
+.queuecard {
+  border: 0 !important;
+}
 
 .time-float {
   right: 0;
