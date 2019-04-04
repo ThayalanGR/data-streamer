@@ -16,7 +16,6 @@ class Upload extends Component {
     super(props);
     this.state = {
       isLoading: true,
-      isQueueEmpty: true,
       fileArray: [],
       isQueueProcessActive: false
     };
@@ -100,35 +99,36 @@ class Upload extends Component {
             }, 2000);
           } else {
             toast.dismiss(toastId);
-            toast.error(
-              `something went wrong on uploading ${fileName.substring(
-                0,
-                15
-              )}, try again!`,
-              {
-                position: "bottom-left",
-                autoClose: 2000
-              }
+            toast(
+              <div className="text-danger p-2">
+                something went wrong on uploading {fileName.substring(0, 15)},
+                try again!
+              </div>
             );
           }
         })
         .catch(thrown => {
           if (axios.isCancel(thrown)) {
-            toast(`upload cancelled - ${fileName}`, {
-              type: toast.TYPE.INFO,
-              hideProgressBar: true,
-              autoClose: 2000,
-              position: "bottom-left"
-            });
+            toast(
+              <div className="text-success p-2">
+                upload cancelled -{fileName}
+              </div>,
+              {
+                type: toast.TYPE.DEFAULT,
+                hideProgressBar: true,
+                autoClose: 2000,
+                position: "bottom-center"
+              }
+            );
           } else {
             toast.dismiss(toastId);
-            toast.error(
-              `something went wrong on uploading ${fileName.substring(
-                0,
-                15
-              )}, try again!`,
+            toast(
+              <div className="text-danger p-2">
+                something went wrong on uploading {fileName.substring(0, 15)},
+                try again!
+              </div>,
               {
-                position: "bottom-left",
+                position: "bottom-center",
                 autoClose: 2000
               }
             );
@@ -146,17 +146,20 @@ class Upload extends Component {
       }
 
       this.setState({ fileArray: filesInQueue });
-      this.setState({ isQueueEmpty: false });
       if (!this.state.isQueueProcessActive) {
         await this.uploadHandler();
       }
     }
   };
 
-  cancelFileUpload(index) {
-    console.log(index);
-    filesInQueue.splice(index, 1);
-    this.setState({ fileArray: filesInQueue });
+  cancelFileUpload(indexObj) {
+    if(indexObj.isSingle) {
+      filesInQueue.splice(indexObj.index, 1);
+      this.setState({ fileArray: filesInQueue });
+    } else {
+      filesInQueue = []
+      this.setState({ fileArray: filesInQueue });
+    }
   }
 
   render() {
@@ -164,26 +167,19 @@ class Upload extends Component {
       <Spinner size={{ size: "large" }} />
     ) : (
       <Fragment>
-        {this.state.isQueueEmpty ? (
-          <div className="card-me" style={{ position: "absolute", bottom: 0 }}>
-            <div className="card-header text-center bg-transparent text-success font-weight-bold">
-              Files in the Queue
-            </div>
-            <ul className="list-group list-group-flush " />
-          </div>
+        {!this.state.fileArray.length > 0 ? (
+          <> </>
         ) : (
           <div className="card-me" style={{ position: "absolute", bottom: 0 }}>
-            <div className="card-header text-center bg-transparent text-success font-weight-bold">
-              Files in the Queue
+            <div className="card-header bg-transparent  text-success font-weight-bold d-flex justify-content-between">
+              <div /> <div>Files in the Queue</div>
+              <button
+                onClick={() => this.cancelFileUpload({index: null, isSingle: false})}
+                className="btn btn-link p-0 m-0"
+              >
+                <i className="far fa-times-circle text-danger" />
+              </button>
             </div>
-            <button
-              onLoad={() =>
-                !this.state.isQueueProcessActive ? this.uploadHandler() : null
-              }
-              style={{ display: "none" }}
-            >
-              i am hidden
-            </button>
             <ul className="list-group list-group-flush ">
               {this.state.fileArray.map((item, index) => {
                 return (
@@ -191,14 +187,14 @@ class Upload extends Component {
                     key={index}
                     className="list-group-item bg-transparent d-flex justify-content-between flex-row"
                   >
-                    <div>{index}</div>
+                    <div>{index + 1}</div>
                     <div>{item.fileName.substring(0, 20)}</div>
                     <div>
                       <button
-                        onClick={() => this.cancelFileUpload(index)}
+                        onClick={() => this.cancelFileUpload({index: index, isSingle: true})}
                         className="btn btn-link p-0 m-0"
                       >
-                        <i className="far fa-times-circle text-danger" />
+                        <i className="fas fa-times text-danger" />
                       </button>
                     </div>
                   </li>
