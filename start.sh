@@ -5,19 +5,24 @@ echo "                $(tput sgr 0 1)$(tput bold )$(tput setaf 2)ctrl + c"
 
 echo "$(tput sgr0)"
 
-sleep 3
+sleep 2
 
 trap finish EXIT SIGINT SIGTERM
 
 function finish {
-  # Your cleanup code here
+    echo "Shutting down video streamer safely..."
+    echo " "
+    echo " "
     taskkill //f //im node.exe
+    sleep 2
     EXIT
 }
 echo "Video streamer starting...."
 
 taskkill //f //im node.exe
 
+cd ./scripts
 
 ./client.sh &
+
 ./server.sh

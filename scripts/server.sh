@@ -2,6 +2,6 @@
 
 echo "starting video streamer server..."
 
-cd ./server
+cd ../server
 
 npm start

@@ -1,12 +1,9 @@
 #!/bin/bash
-echo "Video streamer Installing in your system...."
+echo "Video streamer Installing in your system..."
 
-echo "Installing ***server***"
+echo " "
 
-
-# dir=$pwd
-# echo $dir
-
+echo "Installing video streamer server..."
 
 cd ./server
 
@@ -18,14 +15,17 @@ echo "video streamer server installed successfully."
 
 echo " "
 
-echo "installing video streamer web-front-end..... "
+echo "installing video streamer web-front-end... "
 
-# exec $SHELL
 cd ./web-front-end
 
 npm install
 
 cd ..
+
+echo "  "
+
+echo "  "
 
 echo "video streamer web-front-end installed successfully."
 
@@ -33,8 +33,6 @@ echo "  "
 
 echo "  "
 
-echo "execute the 'start.sh' script to start the application"
+echo "execute the $(tput bold)$(tput sgr 0 1)$(tput setaf 2)start.sh$(tput sgr 0) script to start the application."
 
 exec $SHELL
-
-# echo "This script has just run another script."
