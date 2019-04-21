@@ -52,15 +52,55 @@ function secondsToHms(d) {
 }
 
 export const uploadcontroller = async (req, res) => {
-
     req.on('aborted', () => {
-        if (fs.existsSync(path.join('uploads', req.originalname))) {
-            fs.unlink(path.join('uploads', req.originalname), function (err) {
-                if (err) return console.log(err);
+        if (reqFileType === 'video') {
+            if (fs.existsSync(path.join('uploads/videos', req.originalname))) {
+                fs.unlink(path.join('uploads/videos', req.originalname), function (err) {
+                    if (err) return console.log(err);
+                    console.error('req aborted by client', path.join('uploads', req.originalname))
+                })
+                reqFileType = '';
+            } else {
                 console.error('req aborted by client', path.join('uploads', req.originalname))
-            })
+                reqFileType = '';
+            }
+        } else if (reqFileType === 'audio') {
+            if (fs.existsSync(path.join('uploads/audios', req.originalname))) {
+                fs.unlink(path.join('uploads/audios', req.originalname), function (err) {
+                    if (err) return console.log(err);
+                    console.error('req aborted by client', path.join('uploads', req.originalname))
+                })
+                reqFileType = '';
+
+            } else {
+                console.error('req aborted by client', path.join('uploads', req.originalname))
+                reqFileType = '';
+            }
+        } else if (reqFileType === 'image') {
+            if (fs.existsSync(path.join('uploads/images', req.originalname))) {
+                fs.unlink(path.join('uploads/images', req.originalname), function (err) {
+                    if (err) return console.log(err);
+                    console.error('req aborted by client', path.join('uploads', req.originalname))
+                })
+                reqFileType = '';
+
+            } else {
+                console.error('req aborted by client', path.join('uploads', req.originalname))
+                reqFileType = '';
+            }
         } else {
-            console.error('req aborted by client', path.join('uploads', req.originalname))
+            if (fs.existsSync(path.join('uploads/others', req.originalname))) {
+                fs.unlink(path.join('uploads/others', req.originalname), function (err) {
+                    if (err) return console.log(err);
+                    console.error('req aborted by client', path.join('uploads', req.originalname))
+                })
+                reqFileType = '';
+
+            } else {
+                console.error('req aborted by client', path.join('uploads', req.originalname))
+                reqFileType = '';
+
+            }
         }
     })
     await upload(req, res, async function (err) {
@@ -74,7 +114,6 @@ export const uploadcontroller = async (req, res) => {
         }
 
         if (reqFileType === 'video') {
-            reqFileType = "";
             //generating thumbnail
             await ffmpeg(path.join('uploads/videos', req.originalname))
                 .screenshots({
@@ -96,37 +135,27 @@ export const uploadcontroller = async (req, res) => {
                 const thumbnail = `thumbnail-${req.originalname.substring(0, req.originalname.toString().length - 5)}.png`;
 
                 await updateDatabase(req, res, thumbnail, duration);
-
             });
         } else if (reqFileType === 'audio') {
-            reqFileType = "";
             var duration = 0;
             //calculating video duration
             await ffmpeg.ffprobe(path.join('uploads/audios', req.originalname), async function (err, metadata) {
-
                 if (err) {
                     console.error(err);
                 }
-
                 // console.log(metadata.format.duration);
                 const duration = metadata.format.duration;
-
                 const thumbnail = `default_music.png`;
-
                 await updateDatabase(req, res, thumbnail, duration);
             })
         } else if (reqFileType === 'image') {
-            reqFileType = "";
             let thumbnail = "none";
             let duration = "none";
             await updateDatabase(req, res, thumbnail, duration);
-
         } else {
-
             let thumbnail = "none";
             let duration = "none";
             await updateDatabase(req, res, thumbnail, duration);
-
         }
 
     })
@@ -153,6 +182,8 @@ async function updateDatabase(req, res, thumbnail, duration) {
                 status: false
             });
         });
+    reqFileType = "";
+
 
 }
 
