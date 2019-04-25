@@ -170,7 +170,7 @@ class Upload extends Component {
         {!this.state.fileArray.length > 0 ? (
           <> </>
         ) : (
-          <div className="card-me" style={{ position: "absolute", bottom: 0 }}>
+          <div className="card-me">
             <div className="card-header bg-transparent  text-success font-weight-bold d-flex justify-content-between">
               <div /> <div>Files in the Queue</div>
               <button
@@ -180,12 +180,12 @@ class Upload extends Component {
                 <i className="far fa-times-circle text-danger" />
               </button>
             </div>
-            <ul className="list-group list-group-flush ">
+            <ul className="list-group list-group-flush queue-card">
               {this.state.fileArray.map((item, index) => {
                 return (
                   <li
                     key={index}
-                    className="list-group-item bg-transparent d-flex justify-content-between flex-row"
+                    className="list-group-item bg-transparent d-flex justify-content-between flex-row bring-up"
                   >
                     <div>{index + 1}</div>
                     <div>{item.fileName.substring(0, 20)}</div>
