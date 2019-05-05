@@ -1,16 +1,16 @@
-# ***local-video-streaming-applicaton***
- nodejs server and multiple front end video streaming application
+# ***Data-streaming-applicaton***
+ nodejs server and multiple front end Data streaming application
 
 
 ## ***Installation***
 ***
 1. Clone this repository using the following command
 ~~~ 
-git clone https://github.com/ThayalanGR/local-video-streaming-application.git
+git clone https://github.com/ThayalanGR/data-streamer.git
 ~~~
 2. Traverse into local-video-streaming-application directory
 ~~~ 
-cd local-video-streaming-application
+cd data-streamer
 ~~~
 
 3. Install the application by execting the shell script 
@@ -35,7 +35,7 @@ cd local-video-streaming-application
 
 
 ### ***reporting issues*** 
-> go to https://github.com/ThayalanGR/local-video-streaming-application/issues
+> go to https://github.com/ThayalanGR/data-streamer/issues
 
 > open new issues using ***New Issue*** button
     
@@ -45,7 +45,7 @@ cd local-video-streaming-application
 ### ***Support this Project*** 
 > give ***star*** to this project 
 
-> follow me in ***social medias***
+> follow me on ***social medias***
 
 [![alt text][1.1]][1]
 [![alt text][2.1]][2]
