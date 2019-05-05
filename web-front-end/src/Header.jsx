@@ -11,7 +11,7 @@ export default class Header extends Component {
         <Fragment>
             <nav className="navbar navbar-expand-lg navbar-dark shadow-sm fixed-top" style={{backgroundColor: "#FFFFFF"}}>
 
-                    <Link className="navbar-brand text-dark d-flex align-items-center justify-content-center font-weight-bold" style={{letterSpacing: "2px"}} to="/" >  <i className="fas fa-play text-success mr-2" style={{fontSize: "28px"}}></i> Local Streamer</Link>
+                    <Link className="navbar-brand text-dark d-flex align-items-center justify-content-center font-weight-bold" style={{letterSpacing: "2px"}} to="/" >  <i className="fas fa-play text-success mr-2" style={{fontSize: "28px"}}></i> Data Streamer</Link>
 
                     <button className="navbar-toggler " type="button" data-toggle="collapse" data-target="#basicExampleNav" aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon text-success bg-success"></span>

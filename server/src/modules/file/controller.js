@@ -34,6 +34,7 @@ var storage = multer.diskStorage({
         cb(null, file.originalname)
     }
 })
+
 var upload = multer({
     storage: storage
 }).single('file');
@@ -51,7 +52,7 @@ function secondsToHms(d) {
 
 }
 
-export const uploadcontroller = async (req, res) => {
+export const uploadFileController = async (req, res) => {
     req.on('aborted', () => {
         if (reqFileType === 'video') {
             if (fs.existsSync(path.join('uploads/videos', req.originalname))) {
@@ -122,7 +123,6 @@ export const uploadcontroller = async (req, res) => {
                     folder: 'uploads/videos/thumbnails',
                     size: '320x240'
                 });
-            var duration = 0;
             //calculating video duration
             await ffmpeg.ffprobe(path.join('uploads/videos', req.originalname), async function (err, metadata) {
 
@@ -133,11 +133,10 @@ export const uploadcontroller = async (req, res) => {
                 // console.log(metadata.format.duration);
                 const duration = metadata.format.duration;
                 const thumbnail = `thumbnail-${req.originalname.substring(0, req.originalname.toString().length - 5)}.png`;
-
-                await updateDatabase(req, res, thumbnail, duration);
+                const path = `uploads/videos/${req.originalname}`
+                await updateDatabase(req, res, thumbnail, duration, path);
             });
         } else if (reqFileType === 'audio') {
-            var duration = 0;
             //calculating video duration
             await ffmpeg.ffprobe(path.join('uploads/audios', req.originalname), async function (err, metadata) {
                 if (err) {
@@ -145,34 +144,39 @@ export const uploadcontroller = async (req, res) => {
                 }
                 // console.log(metadata.format.duration);
                 const duration = metadata.format.duration;
-                const thumbnail = `default_music.png`;
-                await updateDatabase(req, res, thumbnail, duration);
+                const thumbnail = `none`;
+                const path = `uploads/audios/${req.originalname}`
+                await updateDatabase(req, res, thumbnail, duration, path);
             })
         } else if (reqFileType === 'image') {
             let thumbnail = "none";
             let duration = "none";
-            await updateDatabase(req, res, thumbnail, duration);
+            const path = `uploads/images/${req.originalname}`
+            await updateDatabase(req, res, thumbnail, duration, path);
         } else {
             let thumbnail = "none";
             let duration = "none";
-            await updateDatabase(req, res, thumbnail, duration);
+            const path = `uploads/others/${req.originalname}`
+            await updateDatabase(req, res, thumbnail, duration, path);
         }
 
     })
 };
 
-async function updateDatabase(req, res, thumbnail, duration) {
+async function updateDatabase(req, res, thumbnail, duration, path) {
     const file = new fileModel({
         fileName: req.file.originalname,
         type: req.file.mimetype,
         size: Math.round(req.file.size / (1e+6)) > 0 ? Math.round(req.file.size / (1e+6)).toString() + " mb" : req.file.size / 1000 > 0 ? Math.round(req.file.size / 1000).toString() + " kb" : Math.round(req.file.size).toString() + " b",
+        path: path,
+        class: reqFileType.length > 0 ? reqFileType : 'others',
         thumbnail: thumbnail,
         duration: secondsToHms(duration)
     });
 
     await file.save()
         .then((result) => {
-            console.log(result)
+            // console.log(result)
             return res.status(200).send({
                 status: true
             });
@@ -187,12 +191,100 @@ async function updateDatabase(req, res, thumbnail, duration) {
 
 }
 
+export const fetchAllFilesController = (req, res) => {
+
+    fileModel.find({}, (err, items) => {
+        if (err) {
+            res.status(404);
+        }
+        else {
+            res.status(200).send({ items })
+        }
+
+    })
 
 
-export const downloadcontroller = (req, res) => {
+}
+
+export const downloadFileController = (req, res) => {
 
 
-};
+    fileModel.find({ _id: req.params.id }, (err, items) => {
+        if (err) {
+            res.status(404);
+        }
+        else {
+            var file = items[0].path;
+            if (fs.existsSync(file)) {
+                res.setHeader('Content-disposition', 'attachment; filename=' + items[0].fileName);
+                res.setHeader('Content-type', items[0].type);
+                res.setHeader('Content-length', fs.statSync(file)['size']);
+                var filestream = fs.createReadStream(file);
+                filestream.pipe(res);
+                res.send({ status: true })
+            } else {
+                res.send({ status: false })
+            }
+        }
+    })
+}
 
+export const deleteFileController = (req, res) => {
+    console.log(req.params.id)
+    fileModel.find({ _id: req.params.id }, (err, items) => {
+        if (err) {
+            res.status(404).send({ status: "something went wrong" });
+        }
+        else {
+            console.log(items)
+            var file = items[0].path;
+            if (fs.existsSync(file)) {
+                fs.unlink(file, (err) => {
+                    if (err) console.log(err);
+                })
+                if (items[0].thumbnail !== 'none') {
+                    fs.unlink(`uploads/videos/thumbnails/${items[0].thumbnail}`, (err) => {
+                        console.log(err);
+                    });
+                }
+                fileModel.deleteOne({ _id: req.params.id }, (err) => {
+                    if (!err) {
+                        res.status(200).send({ status: "file removed successfully" })
+                    }
+                })
+            } else {
+                fileModel.deleteOne({ _id: req.params.id }, (err) => {
+                    if (!err) {
+                        res.status(200).send({ status: "file removed successfully" })
+                    }
+                })
+            }
+        }
+    })
+}
 
+export const deleteAllFilesController = (req, res) => {
 
+    const directories = ['uploads/audios', 'uploads/images', 'uploads/videos', 'uploads/others', 'uploads/videos/thumbnails']
+
+    directories.map((item) => {
+        fs.readdir(item, (err, files) => {
+            if (err) console.log(err);
+
+            for (const file of files) {
+                if (file === 'thumbnails') continue;
+                if (fs.existsSync(path.join(item, file))) {
+                    fs.unlink(path.join(item, file), err => {
+                        if (err) console.log(err);
+                    });
+                }
+            }
+        });
+    })
+
+    fileModel.deleteMany({}, (err) => {
+        if (err) res.send({ status: false })
+        else res.send({ status: true })
+    })
+
+}

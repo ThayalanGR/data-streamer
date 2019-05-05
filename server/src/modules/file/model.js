@@ -17,6 +17,14 @@ const fileSchema = Schema({
         type: String,
         required: true
     },
+    path: {
+        type: String,
+        required: true
+    },
+    class: {
+        type: String,
+        required: true
+    },
     thumbnail: {
         type: String,
         required: false
