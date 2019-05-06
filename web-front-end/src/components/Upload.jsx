@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from "react";
 import Spinner from "./Spinner";
 import axios from "axios";
-import "./common.css";
 import { toast } from "react-toastify";
 import axiosCancel from "axios-cancel";
 

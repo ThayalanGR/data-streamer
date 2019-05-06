@@ -9,7 +9,9 @@ import {
 
 //constants
 const PORT = process.env.PORT || 4000;
+
 const app = express();
+
 
 //middleware
 middlewares(app);

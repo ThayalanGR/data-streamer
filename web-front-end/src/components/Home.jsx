@@ -2,7 +2,6 @@ import React, { Component, Fragment } from "react";
 import Spinner from "./Spinner";
 import VideoThumb from "./VideoThumb";
 import constants from './constants';
-// import { toast } from "react-toastify";
 
 class Home extends Component {
   constructor(props) {

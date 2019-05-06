@@ -3,6 +3,13 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import ffmpeg from 'fluent-ffmpeg';
+import express from 'express';
+import http from 'http';
+import socketIO from 'socket.io';
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIO(server);
 
 const mime = {
     html: 'text/html',
@@ -315,6 +322,30 @@ export const serveStaticContentController = async (req, res) => {
         res.set('Content-Type', type);
         stream.pipe(res);
     } else {
-        res.status(404).send({status: "requested file not found!"});
+        res.status(404).send({ status: "requested file not found!" });
     }
+}
+
+
+export const streamContentController = (req, res) => {
+    const io = req.app.get('socketio');
+    let socket_id = [];
+    io.on('connection', socket => {
+        socket_id.push(socket.id);
+        if (socket_id[0] === socket.id) {
+            // remove the connection listener for any subsequent 
+            // connections with the same ID
+            io.removeAllListeners('connection');
+        }
+
+        socket.emit('hello world')
+
+        socket.on('hello message', msg => {
+            console.log('just got: ', msg);
+            socket.emit('chat message', 'hi from server');
+
+        })
+
+    });
+    // res.send({response: req.params.path})
 }

@@ -1,9 +1,5 @@
 import React, { Component, Fragment } from 'react'
-import { Switch, Route, Link } from 'react-router-dom'
-import Upload from './Upload'
-import Download from './Download'
-import Home from './Home'
-import './common.css'
+import { Link } from 'react-router-dom'
 
 export default class Header extends Component {
   render() {
@@ -46,12 +42,6 @@ export default class Header extends Component {
                     </div>
 
                 </nav>
-
-            <Switch>
-                <Route exact path='/' component={Home}/>
-                <Route path='/upload' component={Upload}/>
-                <Route path='/download' component={Download}/>
-            </Switch>
         </Fragment>
     )
   }
