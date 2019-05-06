@@ -1,6 +1,7 @@
 import React, { Component, Fragment} from 'react';
 import Header from './Header';
 import Spinner from './Spinner';
+// import VideoPlayer from './VideoPlayer';
 
 class App extends Component {
 
@@ -21,6 +22,7 @@ class App extends Component {
       this.state.isLoading ? <Spinner size={{size: "large"}} /> : 
       <Fragment >
           <Header />
+          {/* <VideoPlayer /> */}
       </Fragment>
     );
   }

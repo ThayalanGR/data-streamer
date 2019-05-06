@@ -11,6 +11,8 @@ routes.get('/fetchallfiles', authorizer.optional, fileController.fetchAllFilesCo
 routes.get('/downloadfile/:id', authorizer.optional, fileController.downloadFileController);
 routes.get('/deletefile/:id', authorizer.optional, fileController.deleteFileController);
 routes.get('/deleteallfiles', authorizer.optional, fileController.deleteAllFilesController);
+routes.get('/fetchallvideos', authorizer.optional, fileController.fetchAllVideosController);
+routes.get('/servestaticcontent/:path', authorizer.optional, fileController.serveStaticContentController);
 
 
 export default routes;

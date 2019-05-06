@@ -1,6 +1,13 @@
 import React, { Component } from "react";
 import "./common.css";
 import Spinner from "./Spinner";
+import constants from './constants';
+import TimeAgo from 'javascript-time-ago'
+import en from 'javascript-time-ago/locale/en'
+// Add locale-specific relative date/time formatting rules.
+TimeAgo.addLocale(en)
+// Create relative date/time formatter.
+const timeAgo = new TimeAgo('en-US')
 
 export default class VideoThumb extends Component {
   constructor(props) {
@@ -14,7 +21,12 @@ export default class VideoThumb extends Component {
   componentDidMount() {
     setTimeout(() => {
       this.setState({ isLoading: false });
-    }, 3000);
+    }, 2000);
+  }
+
+  imageUrlEncoder(url) {
+    let encodedString = new Buffer(url).toString('base64')
+    return `${constants.baseUrl}/servestaticcontent/${encodedString}`;
   }
 
   render() {
@@ -35,23 +47,23 @@ export default class VideoThumb extends Component {
           <img
             className=""
             style={{ minHeight: "150px", maxHeight: "150px", width: "100%" }}
-            src={content.imageUrl}
+            src={this.imageUrlEncoder(content.thumbnail)}
             alt=""
           />
           <div className="time-float">
-            <p>{content.videoTime}</p>
+            <p>{content.duration}</p>
           </div>
         </div>
         <div className="" style={{ lineHeight: 0, fontSize: "14px" }}>
-          <h6 className="wrap-me">{content.videoName}</h6>
+          <h6 className="wrap-me">{content.fileName}</h6>
           <p className="mb-4">
-            <span className="text-default">{content.category}</span>
+            <span className="text-default">Favourite</span>
           </p>
           <p className="">
             <span className="text-default dot-after">
-              {content.views} views
+              54 views
             </span>
-            <span className="text-default">{content.uploadedOn}</span>
+            <span className="text-default">{timeAgo.format(new Date(content.uploadedOn))}</span>
           </p>
         </div>
       </div>

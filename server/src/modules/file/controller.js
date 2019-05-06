@@ -4,6 +4,17 @@ import path from 'path';
 import fs from 'fs';
 import ffmpeg from 'fluent-ffmpeg';
 
+const mime = {
+    html: 'text/html',
+    txt: 'text/plain',
+    css: 'text/css',
+    gif: 'image/gif',
+    jpg: 'image/jpeg',
+    png: 'image/png',
+    svg: 'image/svg+xml',
+    js: 'application/javascript'
+};
+
 
 const fileTypes = {
     "videos": ["webm", "mkv", "flv", "vob", "ogv", "ogg", "drc", "gif", "gifv", "mng", "avi", "MTS", "M2TS", "mov", "qt", "wmv", "yuv", "rm", "rmvb", "asf", "amv", "mp4", "m4v", "mpg", "mp2", "mpeg", "mpe", "mpv", "mpg", "mpeg", "m2v", "m4v", "svi", "3gp", "3g2", "mxf", "roq", "nsv", "flv", "f4v", "f4p", "f4a", "f4b"],
@@ -132,7 +143,7 @@ export const uploadFileController = async (req, res) => {
 
                 // console.log(metadata.format.duration);
                 const duration = metadata.format.duration;
-                const thumbnail = `thumbnail-${req.originalname.substring(0, req.originalname.toString().length - 5)}.png`;
+                const thumbnail = `uploads/videos/thumbnails/thumbnail-${req.originalname.substring(0, req.originalname.toString().length - 5)}.png`;
                 const path = `uploads/videos/${req.originalname}`
                 await updateDatabase(req, res, thumbnail, duration, path);
             });
@@ -207,8 +218,6 @@ export const fetchAllFilesController = (req, res) => {
 }
 
 export const downloadFileController = (req, res) => {
-
-
     fileModel.find({ _id: req.params.id }, (err, items) => {
         if (err) {
             res.status(404);
@@ -263,18 +272,18 @@ export const deleteFileController = (req, res) => {
     })
 }
 
-export const deleteAllFilesController = (req, res) => {
+export const deleteAllFilesController = async (req, res) => {
 
     const directories = ['uploads/audios', 'uploads/images', 'uploads/videos', 'uploads/others', 'uploads/videos/thumbnails']
 
     directories.map((item) => {
-        fs.readdir(item, (err, files) => {
+        fs.readdir(item, async (err, files) => {
             if (err) console.log(err);
 
             for (const file of files) {
                 if (file === 'thumbnails') continue;
                 if (fs.existsSync(path.join(item, file))) {
-                    fs.unlink(path.join(item, file), err => {
+                    await fs.unlink(path.join(item, file), err => {
                         if (err) console.log(err);
                     });
                 }
@@ -282,9 +291,30 @@ export const deleteAllFilesController = (req, res) => {
         });
     })
 
-    fileModel.deleteMany({}, (err) => {
+    await fileModel.deleteMany({}, (err) => {
         if (err) res.send({ status: false })
         else res.send({ status: true })
     })
 
+}
+
+export const fetchAllVideosController = async (req, res) => {
+    await fileModel.find({ class: "video" }, async (err, items) => {
+        if (err) console.log(err)
+        else {
+            await res.status(200).send(items)
+        }
+    })
+}
+
+export const serveStaticContentController = async (req, res) => {
+    const file = Buffer.from(req.params.path, 'base64').toString();
+    if (fs.existsSync(file)) {
+        var type = mime[path.extname(file).slice(1)] || 'text/plain';
+        var stream = fs.createReadStream(file);
+        res.set('Content-Type', type);
+        stream.pipe(res);
+    } else {
+        res.status(404).send({status: "requested file not found!"});
+    }
 }

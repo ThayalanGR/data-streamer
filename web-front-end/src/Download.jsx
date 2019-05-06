@@ -1,13 +1,12 @@
 import React, { Component, Fragment } from "react";
 import Spinner from "./Spinner";
 import constants from './constants';
-import TimeAgo from 'javascript-time-ago'
-import en from 'javascript-time-ago/locale/en'
 import { toast } from "react-toastify";
 
+import TimeAgo from 'javascript-time-ago'
+import en from 'javascript-time-ago/locale/en'
 // Add locale-specific relative date/time formatting rules.
 TimeAgo.addLocale(en)
-
 // Create relative date/time formatter.
 const timeAgo = new TimeAgo('en-US')
 
