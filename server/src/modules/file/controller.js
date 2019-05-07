@@ -3,25 +3,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import ffmpeg from 'fluent-ffmpeg';
-import express from 'express';
-import http from 'http';
-import socketIO from 'socket.io';
-
-const app = express();
-const server = http.createServer(app);
-const io = socketIO(server);
-
-const mime = {
-    html: 'text/html',
-    txt: 'text/plain',
-    css: 'text/css',
-    gif: 'image/gif',
-    jpg: 'image/jpeg',
-    png: 'image/png',
-    svg: 'image/svg+xml',
-    js: 'application/javascript'
-};
-
+import mime from 'mime-types';
 
 const fileTypes = {
     "videos": ["webm", "mkv", "flv", "vob", "ogv", "ogg", "drc", "gif", "gifv", "mng", "avi", "MTS", "M2TS", "mov", "qt", "wmv", "yuv", "rm", "rmvb", "asf", "amv", "mp4", "m4v", "mpg", "mp2", "mpeg", "mpe", "mpv", "mpg", "mpeg", "m2v", "m4v", "svi", "3gp", "3g2", "mxf", "roq", "nsv", "flv", "f4v", "f4p", "f4a", "f4b"],
@@ -317,7 +299,7 @@ export const fetchAllVideosController = async (req, res) => {
 export const serveStaticContentController = async (req, res) => {
     const file = Buffer.from(req.params.path, 'base64').toString();
     if (fs.existsSync(file)) {
-        var type = mime[path.extname(file).slice(1)] || 'text/plain';
+        var type = mime.lookup(file);
         var stream = fs.createReadStream(file);
         res.set('Content-Type', type);
         stream.pipe(res);
@@ -328,24 +310,42 @@ export const serveStaticContentController = async (req, res) => {
 
 
 export const streamContentController = (req, res) => {
-    const io = req.app.get('socketio');
-    let socket_id = [];
-    io.on('connection', socket => {
-        socket_id.push(socket.id);
-        if (socket_id[0] === socket.id) {
-            // remove the connection listener for any subsequent 
-            // connections with the same ID
-            io.removeAllListeners('connection');
+
+
+    const path = Buffer.from(req.params.path, 'base64').toString();
+    
+    const stat = fs.statSync(path)
+    const fileSize = stat.size
+    const mimeType = mime.lookup(path)
+    console.log(mimeType);
+    
+    const range = req.headers.range
+
+    if (range) {
+        const parts = range.replace(/bytes=/, "").split("-")
+        const start = parseInt(parts[0], 10)
+        const end = parts[1]
+            ? parseInt(parts[1], 10)
+            : fileSize - 1
+        const chunksize = (end - start) + 1
+        const file = fs.createReadStream(path, { start, end })
+        const head = {
+            'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+            'Accept-Ranges': 'bytes',
+            'Content-Length': chunksize,
+            'Content-Type': mimeType,
         }
+        res.writeHead(206, head);
+        file.pipe(res);
+    } else {
+        const head = {
+            'Content-Length': fileSize,
+            'Content-Type': mimeType,
+        }
+        res.writeHead(200, head)
+        fs.createReadStream(path).pipe(res)
+    }
 
-        socket.emit('hello world')
 
-        socket.on('hello message', msg => {
-            console.log('just got: ', msg);
-            socket.emit('chat message', 'hi from server');
 
-        })
-
-    });
-    // res.send({response: req.params.path})
 }
