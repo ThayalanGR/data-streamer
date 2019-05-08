@@ -116,7 +116,7 @@
 }
 
 
-.progress-bar { 
+.progress-bar {
     margin: auto;
     -webkit-appearance: none;
     position: relative;
@@ -124,7 +124,8 @@
     height: 7px;
     width: 100%;
     cursor: pointer;
-    border-radius: 5px; /* iOS */
+    border-radius: 5px;
+    /* iOS */
 }
 
 .progress-bar::-webkit-slider-runnable-track {
@@ -141,6 +142,7 @@
     background: black;
     box-shadow: -100vw 0 0 100vw #00C851;
 }
+
 .progress-bar::-webkit-slider-thumb:hover {
     background: rgb(48, 56, 56);
 }
@@ -160,11 +162,11 @@
     box-sizing: border-box;
 }
 
-.progress-bar::-ms-fill-lower { 
+.progress-bar::-ms-fill-lower {
     background: dodgerblue;
 }
 
-.progress-bar::-ms-thumb { 
+.progress-bar::-ms-thumb {
     background: #fff;
     border: 2px solid #999;
     height: 40px;
@@ -172,27 +174,27 @@
     box-sizing: border-box;
 }
 
-.progress-bar::-ms-ticks-after { 
-    display: none; 
+.progress-bar::-ms-ticks-after {
+    display: none;
 }
 
-.progress-bar::-ms-ticks-before { 
-    display: none; 
+.progress-bar::-ms-ticks-before {
+    display: none;
 }
 
-.progress-bar::-ms-track { 
+.progress-bar::-ms-track {
     background: #ddd;
     color: transparent;
     height: 40px;
     border: none;
 }
 
-.progress-bar::-ms-tooltip { 
+.progress-bar::-ms-tooltip {
     display: none;
 }
 
 
-.volume-progress { 
+.volume-progress {
     z-index: 100000;
     margin-right: 20px;
     margin-left: 10px;
@@ -203,7 +205,8 @@
     overflow: hidden;
     height: 7px;
     cursor: pointer;
-    border-radius: 5px; /* iOS */
+    border-radius: 5px;
+    /* iOS */
 }
 
 .volume-progress::-webkit-slider-runnable-track {
@@ -220,6 +223,7 @@
     background: black;
     box-shadow: -100vw 0 0 100vw #00C851;
 }
+
 .volume-progress::-webkit-slider-thumb:hover {
     background: rgb(48, 56, 56);
 }
@@ -239,11 +243,11 @@
     box-sizing: border-box;
 }
 
-.volume-progress::-ms-fill-lower { 
+.volume-progress::-ms-fill-lower {
     background: dodgerblue;
 }
 
-.volume-progress::-ms-thumb { 
+.volume-progress::-ms-thumb {
     background: #fff;
     border: 2px solid #999;
     height: 40px;
@@ -251,35 +255,59 @@
     box-sizing: border-box;
 }
 
-.volume-progress::-ms-ticks-after { 
-    display: none; 
+.volume-progress::-ms-ticks-after {
+    display: none;
 }
 
-.volume-progress::-ms-ticks-before { 
-    display: none; 
+.volume-progress::-ms-ticks-before {
+    display: none;
 }
 
-.volume-progress::-ms-track { 
+.volume-progress::-ms-track {
     background: #ddd;
     color: transparent;
     height: 40px;
     border: none;
 }
 
-.volume-progress::-ms-tooltip { 
+.volume-progress::-ms-tooltip {
     display: none;
 }
 
 
 
-.progress-text{
+.progress-text {
     font-size: 12px;
     margin: 5px;
     padding: 5px;
 }
 
-.progress-splitter{
+.progress-splitter {
     opacity: 0.5;
+}
+
+
+.vjs-fade-out {
+    display: block;
+    visibility: hidden;
+    opacity: 0;
+
+    -webkit-transition: visibility 1.5s, opacity 1.5s;
+    -moz-transition: visibility 1.5s, opacity 1.5s;
+    -ms-transition: visibility 1.5s, opacity 1.5s;
+    -o-transition: visibility 1.5s, opacity 1.5s;
+    transition: visibility 1.5s, opacity 1.5s;
+
+    /* Wait a moment before fading out the control bar */
+    -webkit-transition-delay: 1.5s;
+    -moz-transition-delay: 1.5s;
+    -ms-transition-delay: 1.5s;
+    -o-transition-delay: 1.5s;
+    transition-delay: 1.5s;
+}
+
+.hide-cursor {
+    cursor: none;
 }
 
 
