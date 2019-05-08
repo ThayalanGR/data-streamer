@@ -27,7 +27,7 @@ class Upload extends Component {
   componentDidMount() {
     this.setState({ isLoading: true });
     setTimeout(
-      function() {
+      function () {
         this.setState({ isLoading: false });
       }.bind(this),
       1000
@@ -35,8 +35,6 @@ class Upload extends Component {
   }
 
   async uploadHandler() {
-    console.log(filesInQueue.length);
-
     while (filesInQueue.length !== 0) {
       this.setState({ isQueueProcessActive: true });
       let popFile = filesInQueue.shift();
@@ -93,7 +91,7 @@ class Upload extends Component {
               type: toast.TYPE.SUCCESS,
               render: `${fileName.substring(0, 15)}... uploaded successfully`
             });
-            setTimeout(function() {
+            setTimeout(function () {
               toast.dismiss(toastId);
             }, 2000);
           } else {
@@ -152,7 +150,7 @@ class Upload extends Component {
   };
 
   cancelFileUpload(indexObj) {
-    if(indexObj.isSingle) {
+    if (indexObj.isSingle) {
       filesInQueue.splice(indexObj.index, 1);
       this.setState({ fileArray: filesInQueue });
     } else {
@@ -165,71 +163,71 @@ class Upload extends Component {
     return this.state.isLoading ? (
       <Spinner size={{ size: "large" }} />
     ) : (
-      <Fragment>
-        {!this.state.fileArray.length > 0 ? (
-          <> </>
-        ) : (
-          <div className="card-me">
-            <div className="card-header bg-transparent  text-success font-weight-bold d-flex justify-content-between">
-              <div /> <div>Files in the Queue</div>
-              <button
-                onClick={() => this.cancelFileUpload({index: null, isSingle: false})}
-                className="btn btn-link p-0 m-0"
-              >
-                <i className="far fa-times-circle text-danger" />
-              </button>
-            </div>
-            <ul className="list-group list-group-flush queue-card">
-              {this.state.fileArray.map((item, index) => {
-                return (
-                  <li
-                    key={index}
-                    className="list-group-item bg-transparent d-flex justify-content-between flex-row bring-up"
+        <Fragment>
+          {!this.state.fileArray.length > 0 ? (
+            <> </>
+          ) : (
+              <div className="card-me">
+                <div className="card-header bg-transparent  text-success font-weight-bold d-flex justify-content-between">
+                  <div /> <div>Files in the Queue</div>
+                  <button
+                    onClick={() => this.cancelFileUpload({ index: null, isSingle: false })}
+                    className="btn btn-link p-0 m-0"
                   >
-                    <div>{index + 1}</div>
-                    <div>{item.fileName.substring(0, 20)}</div>
-                    <div>
-                      <button
-                        onClick={() => this.cancelFileUpload({index: index, isSingle: true})}
-                        className="btn btn-link p-0 m-0"
-                      >
-                        <i className="fas fa-times text-danger" />
-                      </button>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        )}
-        <div className="container-fluid text-center">
-          <div className="row">
-            <div className="col">
-              <form method="post" action="#" id="#">
-                <div className="form-group files">
-                  <label className="font-weight-bold filesbefore">
-                    <i
-                      className="fas fa-upload text-success mr-3"
-                      style={{ fontSize: "20px" }}
-                    />
-                    Upload Files or Drag &amp; Drop Here
-                  </label>
-                  <input
-                    type="file"
-                    name="file"
-                    id="file"
-                    onChange={this.onChangeHandler}
-                    className="form-control"
-                    title=""
-                    multiple
-                  />
+                    <i className="far fa-times-circle text-danger" />
+                  </button>
                 </div>
-              </form>
+                <ul className="list-group list-group-flush queue-card">
+                  {this.state.fileArray.map((item, index) => {
+                    return (
+                      <li
+                        key={index}
+                        className="list-group-item bg-transparent d-flex justify-content-between flex-row bring-up"
+                      >
+                        <div>{index + 1}</div>
+                        <div>{item.fileName.substring(0, 20)}</div>
+                        <div>
+                          <button
+                            onClick={() => this.cancelFileUpload({ index: index, isSingle: true })}
+                            className="btn btn-link p-0 m-0"
+                          >
+                            <i className="fas fa-times text-danger" />
+                          </button>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+          <div className="container-fluid text-center">
+            <div className="row">
+              <div className="col">
+                <form method="post" action="#" id="#">
+                  <div className="form-group files">
+                    <label className="font-weight-bold filesbefore">
+                      <i
+                        className="fas fa-upload text-success mr-3"
+                        style={{ fontSize: "20px" }}
+                      />
+                      Upload Files or Drag &amp; Drop Here
+                  </label>
+                    <input
+                      type="file"
+                      name="file"
+                      id="file"
+                      onChange={this.onChangeHandler}
+                      className="form-control"
+                      title=""
+                      multiple
+                    />
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
-        </div>
-      </Fragment>
-    );
+        </Fragment>
+      );
   }
 }
 

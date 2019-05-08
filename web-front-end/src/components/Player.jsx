@@ -10,6 +10,7 @@ class Player extends Component {
   constructor(props) {
 
     super(props);
+    this.mounted = true;
 
     this.state = {
       isLoading: true,
@@ -40,7 +41,8 @@ class Player extends Component {
 
   componentWillMount() {
 
-    const fileName = Buffer.from(this.props.match.params.id, 'base64').toString().split("/");
+    const fileName = Buffer.from(this.props.match.params.id, 'base64').toString().split("/"); 
+    if(this.mounted)
     this.setState({
       fileName: fileName[fileName.length - 1],
       streamPath: `${constants.baseUrl}/streamcontent/${this.props.match.params.id}`,
@@ -52,14 +54,17 @@ class Player extends Component {
   componentDidMount() {
 
     setTimeout(() => {
+      if(this.mounted)
       this.setState({ isLoading: false });
     }, 1000)
 
   }
 
   hideHandler() {
+    if(this.mounted)
     this.setState({ majorFading: '' })
     setTimeout(function () {
+      if(this.mounted)
       this.setState({ majorFading: 'vjs-fade-out' })
     }.bind(this), 3000)
   }
@@ -94,6 +99,7 @@ class Player extends Component {
     }
 
     document.body.onmouseout = function () {
+      if(this.mounted)
       this.setState({ majorFading: 'vjs-fade-out' })
     }.bind(this)
 
@@ -122,6 +128,7 @@ class Player extends Component {
   videoTimeUpdater() {
     let video = document.getElementById('videoPlayer');
     var nt = video.currentTime * (100 / video.duration);
+    if(this.mounted)
     this.setState({ currentTime: nt });
     var curmins = Math.floor(video.currentTime / 60);
     var cursecs = Math.floor(video.currentTime - curmins * 60);
@@ -131,6 +138,7 @@ class Player extends Component {
     if (dursecs < 10) { dursecs = "0" + dursecs; }
     if (curmins < 10) { curmins = "0" + curmins; }
     if (durmins < 10) { durmins = "0" + durmins; }
+    if(this.mounted)
     this.setState({ curtimetext: curmins + ":" + cursecs, durtimetext: durmins + ":" + dursecs })
 
   }
@@ -153,7 +161,8 @@ class Player extends Component {
 
   volumeHandler(value) {
     let video = document.getElementById('videoPlayer');
-    video.volume = value;
+    if(this.mounted)video.volume = value;
+    
     this.setState({ volume: video.volume })
   }
 
@@ -161,10 +170,13 @@ class Player extends Component {
     let video = document.getElementById('videoPlayer');
     if(this.state.volume === 0) {
       video.volume = this.state.volumeMemory
+      if(this.mounted)
       this.setState({ volume: this.state.volumeMemory })
     } else {
+      if(this.mounted)
       this.setState({volumeMemory: this.state.volume})
       video.volume = 0.0;
+      if(this.mounted)
       this.setState({ volume: 0.0 })
     }
   }
@@ -173,9 +185,11 @@ class Player extends Component {
     let video = document.getElementById('videoPlayer');
     if (this.state.volume < 0.95) {
       video.volume = this.state.volume + 0.05;
+      if(this.mounted)
       this.setState({ volume: this.state.volume + 0.05 })
     } else {
       video.volume = 1.00;
+      if(this.mounted)
       this.setState({ volume: 1.00 })
     }
   }
@@ -184,9 +198,11 @@ class Player extends Component {
     let video = document.getElementById('videoPlayer');
     if (this.state.volume > 0.05) {
       video.volume = this.state.volume - 0.05;
+      if(this.mounted)
       this.setState({ volume: this.state.volume - 0.05 })
     } else {
       video.volume = 0.0;
+      if(this.mounted)
       this.setState({ volume: 0.0 })
     }
 
@@ -196,17 +212,19 @@ class Player extends Component {
   toggleFullScreen() {
 
     if ((document.webkitCurrentFullScreenElement == null)) {
+      if(this.mounted)
       this.setState({ toggleMinMax: 'fa-compress' })
       document.documentElement.webkitRequestFullScreen();
     } else {
+      if(this.mounted)
       this.setState({ toggleMinMax: 'fa-expand' })
       document.webkitCancelFullScreen();
     }
   }
 
   componentWillUnmount() {
+    this.mounted = false;
     if (!(document.webkitCurrentFullScreenElement == null)) {
-      this.setState({ toggleMinMax: 'fa-expand' })
       document.webkitCancelFullScreen();
     }
   }
@@ -215,9 +233,11 @@ class Player extends Component {
     let video = document.getElementById('videoPlayer');
     if (video.paused) {
       video.play()
+      if(this.mounted)
       this.setState({ isPlay: true })
     } else {
       video.pause()
+      if(this.mounted)
       this.setState({ isPlay: false })
     }
   }

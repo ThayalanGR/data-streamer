@@ -23,16 +23,12 @@ class Home extends Component {
     fetch(`${constants.baseUrl}/fetchallvideos`)
       .then(data => data.json())
       .then(data => {
-        console.log(data)
         this.setState({ content: data })
       })
   }
 
   componentDidMount() {
     this.setState({ isLoading: false });
-    setTimeout(function () {
-      // toast.success("upload success");
-    }, 1000);
   }
 
   render() {
