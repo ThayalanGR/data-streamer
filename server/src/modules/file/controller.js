@@ -219,7 +219,6 @@ export const downloadFileController = (req, res) => {
                 res.setHeader('Content-length', fs.statSync(file)['size']);
                 var filestream = fs.createReadStream(file);
                 filestream.pipe(res);
-                res.send({ status: true })
             } else {
                 res.send({ status: false })
             }
