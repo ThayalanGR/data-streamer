@@ -3,6 +3,7 @@ import Spinner from "./Spinner";
 import axios from "axios";
 import { toast } from "react-toastify";
 import axiosCancel from "axios-cancel";
+import constants from './constants'
 
 axiosCancel(axios, {
   debug: false
@@ -49,7 +50,7 @@ class Upload extends Component {
       let toastId = null;
 
       await axios
-        .post("http://localhost:4000/api/upload", data, {
+        .post(`${constants.baseUrl}/upload`, data, {
           requestId: requestId,
           onUploadProgress: p => {
             const progress = p.loaded / p.total;
