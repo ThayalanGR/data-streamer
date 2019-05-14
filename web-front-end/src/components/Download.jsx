@@ -50,14 +50,6 @@ class Download extends Component {
     );
   }
 
-  downloadFileHandler(id) {
-    var popout = window.open(`${constants.baseUrl}/downloadfile/${id}`,
-      "Data Streamer downloader", 'width=500,height=500');
-
-    window.setTimeout(function () {
-      popout.close();
-    }, 500);
-  }
 
   deleteFileHandler(id) {
     fetch(`${constants.baseUrl}/deletefile/${id}`)
@@ -129,7 +121,7 @@ class Download extends Component {
                         </div>
                       </div>
                       <div className="d-flex justify-content-around align-items-center">
-                        <button value={item._id} onClick={(e) => { this.downloadFileHandler(e.target.value) }} className="btn btn-sm btn-success text-white">download</button>
+                        <a href={`${constants.baseUrl}/downloadfile/${item._id}`} onClick={(e) => { }} className="btn btn-sm btn-success text-white">download</a>
                         <button value={item._id} onClick={(e) => { this.deleteFileHandler(e.target.value) }} className="btn btn-sm btn-danger text-white">delete</button>
                       </div>
                     </li>
