@@ -21,6 +21,10 @@ const fileSchema = Schema({
         type: String,
         required: true
     },
+    subtitlePath: {
+        type: String,
+        required: false
+    },
     class: {
         type: String,
         required: true
@@ -36,7 +40,7 @@ const fileSchema = Schema({
     uploadedOn: {
         type: Date,
         default: Date.now()
-    }
+    }, 
 });
 
 

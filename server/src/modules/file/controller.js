@@ -8,7 +8,8 @@ import mime from 'mime-types';
 const fileTypes = {
     "videos": ["webm", "mkv", "flv", "vob", "ogv", "ogg", "drc", "gif", "gifv", "mng", "avi", "MTS", "M2TS", "mov", "qt", "wmv", "yuv", "rm", "rmvb", "asf", "amv", "mp4", "m4v", "mpg", "mp2", "mpeg", "mpe", "mpv", "mpg", "mpeg", "m2v", "m4v", "svi", "3gp", "3g2", "mxf", "roq", "nsv", "flv", "f4v", "f4p", "f4a", "f4b"],
     "audios": ["ape", "wv", "m4a", "wav", "aiff", "3gp", "aa", "aac", "aax", "act", "aiff", "amr", "ape", "au", "awb", "dct", "dss", "dvf", "flac", "gsm", "iklax", "ivs", "m4a", "m4b", "m4p", "mmf", "mp3", "mpc", "msv", "nmf", "nsf", "ogg", "oga", "mogg", "opus", "ra", "rm", "ra", "raw", "sln", "tta", "vox", "wav", "wma", "wv", "webm", "8svx"],
-    "images": ["tif", "jpg", "jpeg", "gif", "png", "bmp", "raw", "tiff", "jpeg2000", "webp", "svg", "eps", "pct", "pcx", "tga", "wmf"]
+    "images": ["tif", "jpg", "jpeg", "gif", "png", "bmp", "raw", "tiff", "jpeg2000", "webp", "svg", "eps", "pct", "pcx", "tga", "wmf"],
+    "subtitles": ["srt", "vtt"]
 }
 
 let reqFileType = '';
@@ -25,6 +26,9 @@ var storage = multer.diskStorage({
         } else if (fileTypes.images.includes(fileName[fileName.length - 1].toLowerCase())) {
             reqFileType = 'image';
             cb(null, 'uploads/images');
+        } else if (fileTypes.subtitles.includes(fileName[fileName.length - 1].toLowerCase())) {
+            reqFileType = 'subtitle';
+            cb(null, 'uploads/videos/subtitles');
         } else {
             cb(null, 'uploads/others')
         }
@@ -53,6 +57,7 @@ function secondsToHms(d) {
 }
 
 export const uploadFileController = async (req, res) => {
+
     req.on('aborted', () => {
         if (reqFileType === 'video') {
             if (fs.existsSync(path.join('uploads/videos', req.originalname))) {
@@ -104,6 +109,7 @@ export const uploadFileController = async (req, res) => {
             }
         }
     })
+
     await upload(req, res, async function (err) {
 
         if (err instanceof multer.MulterError) {
@@ -113,6 +119,7 @@ export const uploadFileController = async (req, res) => {
             console.error(err)
             return res.status(500).json(err)
         }
+
 
         if (reqFileType === 'video') {
             //generating thumbnail
@@ -153,6 +160,11 @@ export const uploadFileController = async (req, res) => {
             let duration = "none";
             const path = `uploads/images/${req.originalname}`
             await updateDatabase(req, res, thumbnail, duration, path);
+        } else if (reqFileType === 'subtitle') {
+            // update the mongodb with the id of video file
+            const subtitlePath = `uploads/videos/subtitles/${req.originalname}`
+            const id = req.params.id
+            await updateDbWithSubtitlePath(req, res, id, subtitlePath)
         } else {
             let thumbnail = "none";
             let duration = "none";
@@ -161,7 +173,30 @@ export const uploadFileController = async (req, res) => {
         }
 
     })
+
 };
+
+async function updateDbWithSubtitlePath(req, res, id, subtitlePath) {
+    fileModel.findById(id, function (err, doc) {
+        if (err)
+            res.send(err);
+
+        doc.subtitlePath = subtitlePath;
+
+        doc.save((err) => {
+
+            if (err) res.send(err)
+
+            res.status(200).send({
+                status: true,
+                type: reqFileType,
+                id: null
+            })
+            reqFileType = ""
+        });
+    });
+
+}
 
 async function updateDatabase(req, res, thumbnail, duration, path) {
     const file = new fileModel({
@@ -169,6 +204,7 @@ async function updateDatabase(req, res, thumbnail, duration, path) {
         type: req.file.mimetype,
         size: Math.round(req.file.size / (1e+6)) > 0 ? Math.round(req.file.size / (1e+6)).toString() + " mb" : req.file.size / 1000 > 0 ? Math.round(req.file.size / 1000).toString() + " kb" : Math.round(req.file.size).toString() + " b",
         path: path,
+        subtitlePath: null,
         class: reqFileType.length > 0 ? reqFileType : 'others',
         thumbnail: thumbnail,
         duration: secondsToHms(duration)
@@ -176,9 +212,10 @@ async function updateDatabase(req, res, thumbnail, duration, path) {
 
     await file.save()
         .then((result) => {
-            // console.log(result)
             return res.status(200).send({
-                status: true
+                status: true,
+                type: reqFileType,
+                id: result._id
             });
         }).catch((err) => {
             console.log(err);
@@ -262,7 +299,7 @@ export const deleteFileController = (req, res) => {
 
 export const deleteAllFilesController = async (req, res) => {
 
-    const directories = ['uploads/audios', 'uploads/images', 'uploads/videos', 'uploads/others', 'uploads/videos/thumbnails']
+    const directories = ['uploads/audios', 'uploads/images', 'uploads/videos', 'uploads/others', 'uploads/videos/thumbnails', 'uploads/videos/subtitles']
 
     directories.map((item) => {
         fs.readdir(item, async (err, files) => {
@@ -270,6 +307,7 @@ export const deleteAllFilesController = async (req, res) => {
 
             for (const file of files) {
                 if (file === 'thumbnails') continue;
+                if (file === 'subtitles') continue;
                 if (fs.existsSync(path.join(item, file))) {
                     await fs.unlink(path.join(item, file), err => {
                         if (err) console.log(err);
@@ -307,17 +345,16 @@ export const serveStaticContentController = async (req, res) => {
     }
 }
 
-
 export const streamContentController = (req, res) => {
 
 
     const path = Buffer.from(req.params.path, 'base64').toString();
-    
+
     const stat = fs.statSync(path)
     const fileSize = stat.size
     const mimeType = mime.lookup(path)
     console.log(mimeType);
-    
+
     const range = req.headers.range
 
     if (range) {

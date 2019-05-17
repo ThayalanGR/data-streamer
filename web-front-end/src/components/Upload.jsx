@@ -11,7 +11,8 @@ axiosCancel(axios, {
 
 let filesInQueue = [];
 
-class Upload extends Component {
+export default class Upload extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -35,22 +36,19 @@ class Upload extends Component {
     );
   }
 
-  async uploadHandler() {
+  async uploadHandler(id) {
     while (filesInQueue.length !== 0) {
       this.setState({ isQueueProcessActive: true });
       let popFile = filesInQueue.shift();
       this.setState({ fileArray: filesInQueue });
       let file = popFile.file;
       let fileName = popFile.fileName;
-
       const data = new FormData();
       data.append("file", file);
-
       const requestId = fileName.trim();
       let toastId = null;
-
       await axios
-        .post(`${constants.baseUrl}/upload`, data, {
+        .post(`${constants.baseUrl}/upload/${id}`, data, {
           requestId: requestId,
           onUploadProgress: p => {
             const progress = p.loaded / p.total;
@@ -88,6 +86,52 @@ class Upload extends Component {
         })
         .then(res => {
           if (res.statusText === "OK") {
+            if (res.data.type === "video") {
+              let newToastId = toast.warn(<div className="container-fluid">
+                <div className="row">
+                  <div className="col">
+                    It seems that you have uploaded a video file
+
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col text-danger" style={{ maxWidth: "290px", wordBreak: "break-all" }}>
+                    {fileName}
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col">
+                    Do you want to add subtitle for it?
+                </div>
+                </div>
+                <div className="row">
+                  <div className="col">
+                    <div className="custom-file">
+                      <input type="file" className="custom-file-input" id="validatedCustomFile" onChange={(event) => {
+                        const files = event.target.files;
+                        const fileName = files[0].name.split(".")
+                        const fileExtension = fileName[fileName.length - 1]
+                        if (fileExtension.toLowerCase() === 'srt' || fileExtension.toLowerCase() === 'vtt') {
+                          this.onChangeHandler(event, res.data.id)
+                          toast.dismiss(newToastId);
+                        } else {
+                          toast.error("unsupported file format detected select only srt or vtt file format", {
+                            position: "bottom-left",
+                          })
+                        }
+                      }
+                      } required />
+                      <label className="custom-file-label" htmlFor="validatedCustomFile">Choose subtitle file</label>
+                    </div>
+                  </div>
+                </div>
+              </div>, {
+                  position: "bottom-center",
+                  autoClose: false,
+                  progress: false,
+                  closeOnClick: false,
+                })
+            }
             toast.update(toastId, {
               type: toast.TYPE.SUCCESS,
               render: `${fileName.substring(0, 15)}... uploaded successfully`
@@ -136,7 +180,7 @@ class Upload extends Component {
     this.setState({ isQueueProcessActive: false });
   }
 
-  onChangeHandler = async event => {
+  onChangeHandler = async (event, id) => {
     if (event.target.files.length > 0) {
       const files = event.target.files;
       for (let i = 0; i < files.length; i++) {
@@ -145,7 +189,7 @@ class Upload extends Component {
 
       this.setState({ fileArray: filesInQueue });
       if (!this.state.isQueueProcessActive) {
-        await this.uploadHandler();
+        await this.uploadHandler(id);
       }
     }
   };
@@ -212,12 +256,12 @@ class Upload extends Component {
                         style={{ fontSize: "20px" }}
                       />
                       Upload Files or Drag &amp; Drop Here
-                  </label>
+                            </label>
                     <input
                       type="file"
                       name="file"
                       id="file"
-                      onChange={this.onChangeHandler}
+                      onChange={(e) => this.onChangeHandler(e, null)}
                       className="form-control"
                       title=""
                       multiple
@@ -231,5 +275,3 @@ class Upload extends Component {
       );
   }
 }
-
-export default Upload;
