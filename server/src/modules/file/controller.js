@@ -4,6 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import ffmpeg from 'fluent-ffmpeg';
 import mime from 'mime-types';
+import srt2vtt from 'srt-to-vtt';
 
 const fileTypes = {
     "videos": ["webm", "mkv", "flv", "vob", "ogv", "ogg", "drc", "gif", "gifv", "mng", "avi", "MTS", "M2TS", "mov", "qt", "wmv", "yuv", "rm", "rmvb", "asf", "amv", "mp4", "m4v", "mpg", "mp2", "mpeg", "mpe", "mpv", "mpg", "mpeg", "m2v", "m4v", "svi", "3gp", "3g2", "mxf", "roq", "nsv", "flv", "f4v", "f4p", "f4a", "f4b"],
@@ -28,7 +29,11 @@ var storage = multer.diskStorage({
             cb(null, 'uploads/images');
         } else if (fileTypes.subtitles.includes(fileName[fileName.length - 1].toLowerCase())) {
             reqFileType = 'subtitle';
-            cb(null, 'uploads/videos/subtitles');
+            if (fileName[fileName.length - 1].toLowerCase() === 'srt') {
+                cb(null, 'uploads/videos/subtitles/srt');
+            } else {
+                cb(null, 'uploads/videos/subtitles/vtt');
+            }
         } else {
             cb(null, 'uploads/others')
         }
@@ -162,7 +167,17 @@ export const uploadFileController = async (req, res) => {
             await updateDatabase(req, res, thumbnail, duration, path);
         } else if (reqFileType === 'subtitle') {
             // update the mongodb with the id of video file
-            const subtitlePath = `uploads/videos/subtitles/${req.originalname}`
+            // converting srt to vtt
+            const fileName = req.originalname.split(".");
+            const isSrt = fileName[fileName.length - 1].toLowerCase() === 'srt' ? true : false;
+            let vttName = req.originalname;
+            if (isSrt) {
+                vttName = `${fileName.join()}.vtt`
+                fs.createReadStream(`uploads/videos/subtitles/srt/${req.originalname}`)
+                    .pipe(srt2vtt())
+                    .pipe(fs.createWriteStream(`uploads/videos/subtitles/vtt/${vttName}`))
+            }
+            const subtitlePath = `uploads/videos/subtitles/vtt/${vttName}`
             const id = req.params.id
             await updateDbWithSubtitlePath(req, res, id, subtitlePath)
         } else {
@@ -299,7 +314,7 @@ export const deleteFileController = (req, res) => {
 
 export const deleteAllFilesController = async (req, res) => {
 
-    const directories = ['uploads/audios', 'uploads/images', 'uploads/videos', 'uploads/others', 'uploads/videos/thumbnails', 'uploads/videos/subtitles']
+    const directories = ['uploads/audios', 'uploads/images', 'uploads/videos', 'uploads/others', 'uploads/videos/thumbnails', 'uploads/videos/subtitles/vtt', 'uploads/videos/subtitles/vtt']
 
     directories.map((item) => {
         fs.readdir(item, async (err, files) => {
@@ -308,6 +323,8 @@ export const deleteAllFilesController = async (req, res) => {
             for (const file of files) {
                 if (file === 'thumbnails') continue;
                 if (file === 'subtitles') continue;
+                if (file === 'srt') continue;
+                if (file === 'vtt') continue;
                 if (fs.existsSync(path.join(item, file))) {
                     await fs.unlink(path.join(item, file), err => {
                         if (err) console.log(err);
