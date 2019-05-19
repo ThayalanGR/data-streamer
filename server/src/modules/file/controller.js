@@ -354,6 +354,8 @@ export const serveStaticContentController = async (req, res) => {
     const file = Buffer.from(req.params.path, 'base64').toString();
     if (fs.existsSync(file)) {
         var type = mime.lookup(file);
+        console.log(type);
+        
         var stream = fs.createReadStream(file);
         res.set('Content-Type', type);
         stream.pipe(res);

@@ -38,7 +38,12 @@ class VideoThumb extends Component {
 
   fireVideoPlayer() {
     let encodedString = new Buffer(this.state.videoSrc).toString('base64');
-    this.props.history.push(`/player/${encodedString}`)
+    if (this.state.content.subtitlePath !== null) {
+      let subtitleEncodedString = new Buffer(this.state.content.subtitlePath).toString('base64');
+      this.props.history.push(`/player/${encodedString}/${subtitleEncodedString}`)
+    } else {
+      this.props.history.push(`/player/${encodedString}/null`)
+    }
   }
 
 

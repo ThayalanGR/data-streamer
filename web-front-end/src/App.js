@@ -38,7 +38,7 @@ class App extends Component {
               <Route exact path='/' component={Home} />
               <Route path='/upload' component={Upload} />
               <Route path='/download' component={Download} />
-              <Route path='/player/:id' component={Player} />
+              <Route path='/player/:id/:subid' component={Player} />
               <Route path='*' component={NotFound} />
             </Switch>
           </Router>

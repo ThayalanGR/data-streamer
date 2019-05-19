@@ -3,6 +3,7 @@ import mime from 'mime-types';
 import constants from './constants';
 import { Spinner } from '../components'
 import { withRouter } from 'react-router-dom'
+import Axios from 'axios';
 
 
 class Player extends Component {
@@ -25,7 +26,9 @@ class Player extends Component {
       durtimetext: '',
       majorFading: '',
       volumeMemory: 0.5,
-      timeoutHandler: null
+      timeoutHandler: null,
+      subtitleData: null,
+      isTrackExist: false
     }
 
     this.closePlayer = this.closePlayer.bind(this);
@@ -47,9 +50,22 @@ class Player extends Component {
       this.setState({
         fileName: fileName[fileName.length - 1],
         streamPath: `${constants.baseUrl}/streamcontent/${this.props.match.params.id}`,
-        mimeType: mime.lookup(fileName[fileName.length - 1])
+        mimeType: mime.lookup(fileName[fileName.length - 1]),
       })
 
+  }
+
+  getSubtitleContent(path) {
+    if (path != null) {
+      Axios.get(`${constants.baseUrl}/servestaticcontent/${path}`)
+        .then(res => {
+          const data = res.data;
+          this.setState({ subtitleData: data })
+        })
+        .catch(err => console.log(err))
+    } else {
+
+    }
   }
 
   componentDidMount() {
@@ -57,22 +73,24 @@ class Player extends Component {
     setTimeout(() => {
       if (this.mounted)
         this.setState({ isLoading: false });
+      let subtitlePath = this.props.match.params.subid;
+      this.getSubtitleContent(subtitlePath);
     }, 1000)
 
-    
+
   }
-  
+
   hideHandler() {
     if (this.mounted)
       this.setState({ majorFading: '' })
-    
+
     if (this.state.timeoutHandler !== null) {
       clearTimeout(this.state.timeoutHandler)
       this.setState({ timeoutHandler: null })
     }
     let timeOut = setTimeout(function () {
       if (this.mounted)
-      this.setState({ majorFading: 'vjs-fade-out' })
+        this.setState({ majorFading: 'vjs-fade-out' })
     }.bind(this), 3000)
     this.setState({ timeoutHandler: timeOut });
   }
@@ -80,6 +98,21 @@ class Player extends Component {
   initiateVideoInfoHandler() {
     let video = document.getElementById('videoPlayer');
     video.addEventListener("timeupdate", this.videoTimeUpdater);
+
+    if(!this.state.isTrackExist){
+      this.setState({isTrackExist: true})
+      let track = document.createElement("track");
+      track.kind = "captions";
+      track.label = "English";
+      track.srclang = "en";
+      track.default = true;
+      track.src = `${constants.baseUrl}/servestaticcontent/${this.props.match.params.subid}`;
+      track.addEventListener("load", function () {
+        this.mode = "showing";
+        video.textTracks[0].mode = "showing"; // thanks Firefox
+      });
+      video.appendChild(track);
+    }
 
     this.hideHandler();
 
@@ -289,7 +322,7 @@ class Player extends Component {
 
           <input onChange={(e) => { this.volumeHandler(e.target.value) }} type="range" className={` ${this.state.majorFading} volume-progress`} name="volume-progress" min="0" max="1" step="0.05" value={this.state.volume} id="volume-progress" />
 
-          <video onCanPlay={() => this.initiateVideoInfoHandler()} onClick={() => this.togglePlay()} className="player" id="videoPlayer" src={this.state.streamPath} type={this.state.mimeType} autoPlay>
+          <video onCanPlay={() => this.initiateVideoInfoHandler()} preload="metadata" onClick={() => this.togglePlay()} className="player" id="videoPlayer" src={this.state.streamPath} type={this.state.mimeType} autoPlay>
           </video>
 
         </div>
