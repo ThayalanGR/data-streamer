@@ -1,3 +1,3 @@
 export default {
-    baseUrl: 'http://localhost:4000/api'
+    baseUrl: 'http://192.168.43.126:4000/api'
 }

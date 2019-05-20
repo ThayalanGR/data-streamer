@@ -322,7 +322,7 @@ class Player extends Component {
 
           <input onChange={(e) => { this.volumeHandler(e.target.value) }} type="range" className={` ${this.state.majorFading} volume-progress`} name="volume-progress" min="0" max="1" step="0.05" value={this.state.volume} id="volume-progress" />
 
-          <video onCanPlay={() => this.initiateVideoInfoHandler()} preload="metadata" onClick={() => this.togglePlay()} className="player" id="videoPlayer" src={this.state.streamPath} type={this.state.mimeType} autoPlay>
+          <video crossOrigin="anonymous" onCanPlay={() => this.initiateVideoInfoHandler()} preload="metadata" onClick={() => this.togglePlay()} className="player" id="videoPlayer" src={this.state.streamPath} type={this.state.mimeType} autoPlay>
           </video>
 
         </div>
