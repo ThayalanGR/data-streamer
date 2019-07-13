@@ -4,4 +4,5 @@ echo "starting video streamer client..."
 
 cd ../web-front-end
 
-npm start
+# npm start
+serve -s build

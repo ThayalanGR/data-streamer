@@ -1,3 +1,6 @@
+let urlString = window.location.origin.split(":")
+let url = urlString[0] + ":" + urlString[1]
+
 export default {
-    baseUrl: 'http://192.168.43.126:4000/api'
+    baseUrl: `${url}:4000/api`
 }
