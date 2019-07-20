@@ -1,5 +1,15 @@
 # ***Data-streaming-applicaton***
- nodejs server and multiple front end Data streaming application
+
+**nodejs server and multiple front end Data streaming application**
+
+
+
+## ***Developer Api Docs***
+
+>[DataStreamer API Docs](https://github.com/ThayalanGR/data-streamer/blob/master/API_DOCS.md)
+
+----------
+
 
 
 ## ***Installation***
