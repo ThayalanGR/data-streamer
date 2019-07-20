@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "starting video streamer server..."
+echo "starting Data streamer server..."
 
 cd ../server
 

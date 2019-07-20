@@ -1,8 +1,8 @@
 #!/bin/bash
 
-echo "starting video streamer client..."
+echo "starting Data streamer client..."
 
-cd ../web-front-end
+cd ../web_client
 
 # npm start
 serve -s build

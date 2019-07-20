@@ -1,9 +1,9 @@
 #!/bin/bash
-echo "Video streamer Installing in your system..."
+echo "Data streamer Installing in your system..."
 
 echo " "
 
-echo "Installing video streamer server..."
+echo "Installing Data streamer server..."
 
 cd ./server
 
@@ -11,23 +11,31 @@ npm install
 
 cd ..
 
-echo "video streamer server installed successfully."
+echo "Data streamer server installed successfully."
 
 echo " "
 
-echo "installing video streamer web-front-end... "
+echo "installing Data streamer web client's necessary packages... "
 
-cd ./web-front-end
+cd ./web_client
 
 npm install
 
+echo " "
+
+echo "Installation complete!"
+
+echo " "
+
+echo "Building web client"
+
+npm run build
+
+echo "  "
+
+echo "Build completed!"
+
 cd ..
-
-echo "  "
-
-echo "  "
-
-echo "video streamer web-front-end installed successfully."
 
 echo "  "
 

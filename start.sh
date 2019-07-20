@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "note: $(tput bold )$(tput setaf 1)stop the video streamer only using the command:"
+echo "note: $(tput bold )$(tput setaf 1)stop the Data streamer only using the command:"
 
 echo "                $(tput sgr 0 1)$(tput bold )$(tput setaf 2)ctrl + c" 
 
@@ -10,14 +10,14 @@ sleep 2
 trap finish EXIT SIGINT SIGTERM
 
 function finish {
-    echo "Shutting down video streamer safely..."
+    echo "Shutting down Data streamer safely..."
     echo " "
     echo " "
     taskkill //f //im node.exe
     sleep 2
     EXIT
 }
-echo "Video streamer starting...."
+echo "Data streamer starting...."
 
 taskkill //f //im node.exe
 
