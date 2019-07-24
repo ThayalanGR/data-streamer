@@ -311,6 +311,26 @@ export const deleteFileController = (req, res) => {
         }
     })
 }
+export const deleteSubtitleController = (req, res) => {
+    console.log(req.params.id)
+    fileModel.findOneAndUpdate({ _id: req.params.id }, { $set: { subtitlePath: null } }, { new: false }, (err, items) => {
+        if (err) {
+            res.status(404).send({ status: "something went wrong" });
+        }
+        else {
+            console.log(items)
+            var file = items.subtitlePath;
+            if (fs.existsSync(file)) {
+                fs.unlink(file, (err) => {
+                    if (err) console.log(err);
+                    else res.status(200).send({ status: "subtitle removed successfully" })
+                })
+            } else {
+                res.status(200).send({ status: "subtitle removed successfully" })
+            }
+        }
+    })
+}
 
 export const deleteAllFilesController = async (req, res) => {
 
@@ -355,7 +375,7 @@ export const serveStaticContentController = async (req, res) => {
     if (fs.existsSync(file)) {
         var type = mime.lookup(file);
         console.log(type);
-        
+
         var stream = fs.createReadStream(file);
         res.set('Content-Type', type);
         stream.pipe(res);
@@ -365,8 +385,6 @@ export const serveStaticContentController = async (req, res) => {
 }
 
 export const streamContentController = (req, res) => {
-
-
     const path = Buffer.from(req.params.path, 'base64').toString();
 
     const stat = fs.statSync(path)
