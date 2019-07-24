@@ -18,7 +18,6 @@ class Download extends Component {
     this.state = {
       isLoading: true,
       files: [],
-      subtitle: null
     };
 
     this.initialFetch = this.initialFetch.bind(this)
@@ -296,7 +295,7 @@ class Download extends Component {
                             className="btn btn-link btn-transparent btn-sm"><i className="fas fa-closed-captioning text-success fa-2x"></i></button>
                           : null}
                         <a href={`${constants.baseUrl}/downloadfile/${item._id}`} onClick={(e) => { }} className="text-success"><i className="fas fa-download fa-1x"></i></a>
-                        <button value={item._id} onClick={(e) => { this.deleteFileHandler(e.target.value) }} className="btn btn-sm btn-link btn-transparent"><i className="far fa-trash-alt text-danger fa-2x"></i></button>
+                        <button onClick={(e) => { this.deleteFileHandler(item._id) }} className="btn btn-sm btn-link btn-transparent"><i className="far fa-trash-alt text-danger fa-2x"></i></button>
                       </div>
                     </li>
                     <hr />
