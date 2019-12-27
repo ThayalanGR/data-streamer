@@ -1,0 +1,57 @@
+.auth-body {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-content-holder {
+  width: 300px;
+  height: auto;
+  text-align: center;
+}
+
+.auth-content-logo {
+  font-weight: bold;
+  font-size: 50px;
+  color: rgb(103, 103, 243);
+  margin-bottom: 30px;
+}
+
+.auth-username-input {
+  margin-bottom: 15px;
+}
+
+.auth-username-input > input {
+  text-decoration: none;
+  outline: none;
+  border: 1px solid rgb(230, 225, 225);
+  font-size: 18px;
+  padding: 10px;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.auth-content-login-button {
+  margin-top: 20px;
+  outline: none;
+  cursor: pointer;
+  background: rgb(104, 104, 255);
+  font-size: 16px;
+  padding: 10px;
+  width: 100%;
+  color: #f3f3f3;
+  border-radius: 5px;
+}
+
+.auth-content-forgot-password-holder {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.auth-content-not-register-holder > a {
+  font-size: 15px;
+  text-decoration: none;
+  color: rgb(103, 103, 243);
+}

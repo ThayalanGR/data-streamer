@@ -7,6 +7,8 @@ import Player from './Player';
 import VideoThumb from './VideoThumb';
 import constants from './constants';
 import NotFound from './NotFound';
+import Auth from './Auth';
+import Main from './Main';
 
 
 export {
@@ -18,5 +20,7 @@ Upload,
 Player,
 VideoThumb,
 constants,
-NotFound
+NotFound,
+Auth,
+Main
 }
