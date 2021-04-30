@@ -50,7 +50,7 @@ const fileTypes = {
     "f4v",
     "f4p",
     "f4a",
-    "f4b"
+    "f4b",
   ],
   audios: [
     "ape",
@@ -99,7 +99,7 @@ const fileTypes = {
     "wma",
     "wv",
     "webm",
-    "8svx"
+    "8svx",
   ],
   images: [
     "tif",
@@ -117,52 +117,64 @@ const fileTypes = {
     "pct",
     "pcx",
     "tga",
-    "wmf"
+    "wmf",
   ],
-  subtitles: ["srt", "vtt"]
+  subtitles: ["srt", "vtt"],
 };
 
 let reqFileType = "";
 
 var storage = multer.diskStorage({
-  destination: function(req, file, cb) {
+  destination: function (req, file, cb) {
     let fileName = file.originalname.split(".");
     if (
       fileTypes.videos.includes(fileName[fileName.length - 1].toLowerCase())
     ) {
       reqFileType = "video";
-      cb(null, "uploads/videos");
+      const path = "uploads/videos";
+      fs.mkdirSync(path, { recursive: true });
+      cb(null, path);
     } else if (
       fileTypes.audios.includes(fileName[fileName.length - 1].toLowerCase())
     ) {
       reqFileType = "audio";
-      cb(null, "uploads/audios");
+      const path = "uploads/audios";
+      fs.mkdirSync(path, { recursive: true });
+      cb(null, path);
     } else if (
       fileTypes.images.includes(fileName[fileName.length - 1].toLowerCase())
     ) {
       reqFileType = "image";
-      cb(null, "uploads/images");
+      const path = "uploads/images";
+      fs.mkdirSync(path, { recursive: true });
+      cb(null, path);
     } else if (
       fileTypes.subtitles.includes(fileName[fileName.length - 1].toLowerCase())
     ) {
       reqFileType = "subtitle";
       if (fileName[fileName.length - 1].toLowerCase() === "srt") {
-        cb(null, "uploads/videos/subtitles/srt");
+        const path = "uploads/videos/subtitles/srt";
+        fs.mkdirSync(path, { recursive: true });
+        cb(null, path);
       } else {
-        cb(null, "uploads/videos/subtitles/vtt");
+        const path = "uploads/videos/subtitles/vtt";
+        fs.mkdirSync(path, { recursive: true });
+        cb(null, path);
       }
     } else {
-      cb(null, "uploads/others");
+      const path = "uploads/others";
+      fs.mkdirSync(path, { recursive: true });
+      cb(null, path);
     }
   },
-  filename: function(req, file, cb) {
+  filename: function (req, file, cb) {
     req.originalname = file.originalname;
     cb(null, file.originalname);
-  }
+  },
 });
 
 var upload = multer({
-  storage: storage
+  storage: storage,
 }).single("file");
 
 function secondsToHms(d) {
@@ -192,13 +204,16 @@ export const uploadFileController = async (req, res) => {
   req.on("aborted", () => {
     if (reqFileType === "video") {
       if (fs.existsSync(path.join("uploads/videos", req.originalname))) {
-        fs.unlink(path.join("uploads/videos", req.originalname), function(err) {
-          if (err) return console.log(err);
-          console.error(
-            "req aborted by client",
-            path.join("uploads", req.originalname)
-          );
-        });
+        fs.unlink(
+          path.join("uploads/videos", req.originalname),
+          function (err) {
+            if (err) return console.log(err);
+            console.error(
+              "req aborted by client",
+              path.join("uploads", req.originalname)
+            );
+          }
+        );
         reqFileType = "";
       } else {
         console.error(
@@ -209,13 +224,16 @@ export const uploadFileController = async (req, res) => {
       }
     } else if (reqFileType === "audio") {
       if (fs.existsSync(path.join("uploads/audios", req.originalname))) {
-        fs.unlink(path.join("uploads/audios", req.originalname), function(err) {
-          if (err) return console.log(err);
-          console.error(
-            "req aborted by client",
-            path.join("uploads", req.originalname)
-          );
-        });
+        fs.unlink(
+          path.join("uploads/audios", req.originalname),
+          function (err) {
+            if (err) return console.log(err);
+            console.error(
+              "req aborted by client",
+              path.join("uploads", req.originalname)
+            );
+          }
+        );
         reqFileType = "";
       } else {
         console.error(
@@ -226,13 +244,16 @@ export const uploadFileController = async (req, res) => {
       }
     } else if (reqFileType === "image") {
       if (fs.existsSync(path.join("uploads/images", req.originalname))) {
-        fs.unlink(path.join("uploads/images", req.originalname), function(err) {
-          if (err) return console.log(err);
-          console.error(
-            "req aborted by client",
-            path.join("uploads", req.originalname)
-          );
-        });
+        fs.unlink(
+          path.join("uploads/images", req.originalname),
+          function (err) {
+            if (err) return console.log(err);
+            console.error(
+              "req aborted by client",
+              path.join("uploads", req.originalname)
+            );
+          }
+        );
         reqFileType = "";
       } else {
         console.error(
@@ -243,13 +264,16 @@ export const uploadFileController = async (req, res) => {
       }
     } else {
       if (fs.existsSync(path.join("uploads/others", req.originalname))) {
-        fs.unlink(path.join("uploads/others", req.originalname), function(err) {
-          if (err) return console.log(err);
-          console.error(
-            "req aborted by client",
-            path.join("uploads", req.originalname)
-          );
-        });
+        fs.unlink(
+          path.join("uploads/others", req.originalname),
+          function (err) {
+            if (err) return console.log(err);
+            console.error(
+              "req aborted by client",
+              path.join("uploads", req.originalname)
+            );
+          }
+        );
         reqFileType = "";
       } else {
         console.error(
@@ -261,7 +285,7 @@ export const uploadFileController = async (req, res) => {
     }
   });
 
-  await upload(req, res, async function(err) {
+  await upload(req, res, async function (err) {
     if (err instanceof multer.MulterError) {
       console.error(err);
       return res.status(500).json(err);
@@ -279,12 +303,12 @@ export const uploadFileController = async (req, res) => {
           req.originalname.toString().length - 5
         )}.png`,
         folder: "uploads/videos/thumbnails",
-        size: "320x240"
+        size: "320x240",
       });
       //calculating video duration
       await ffmpeg.ffprobe(
         path.join("uploads/videos", req.originalname),
-        async function(err, metadata) {
+        async function (err, metadata) {
           if (err) {
             console.error(err);
           }
@@ -303,7 +327,7 @@ export const uploadFileController = async (req, res) => {
       //calculating video duration
       await ffmpeg.ffprobe(
         path.join("uploads/audios", req.originalname),
-        async function(err, metadata) {
+        async function (err, metadata) {
           if (err) {
             console.error(err);
           }
@@ -347,18 +371,18 @@ export const uploadFileController = async (req, res) => {
 };
 
 async function updateDbWithSubtitlePath(req, res, id, subtitlePath) {
-  fileModel.findById(id, function(err, doc) {
+  fileModel.findById(id, function (err, doc) {
     if (err) res.send(err);
 
     doc.subtitlePath = subtitlePath;
 
-    doc.save(err => {
+    doc.save((err) => {
       if (err) res.send(err);
 
       res.status(200).send({
         status: true,
         type: reqFileType,
-        id: null
+        id: null,
       });
       reqFileType = "";
     });
@@ -379,22 +403,22 @@ async function updateDatabase(req, res, thumbnail, duration, path) {
     subtitlePath: null,
     class: reqFileType.length > 0 ? reqFileType : "others",
     thumbnail: thumbnail,
-    duration: secondsToHms(duration)
+    duration: secondsToHms(duration),
   });
 
   await file
     .save()
-    .then(result => {
+    .then((result) => {
       return res.status(200).send({
         status: true,
         type: reqFileType,
-        id: result._id
+        id: result._id,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       return res.status(500).send({
-        status: false
+        status: false,
       });
     });
   reqFileType = "";
@@ -441,21 +465,24 @@ export const deleteFileController = (req, res) => {
       console.log(items);
       var file = items[0].path;
       if (fs.existsSync(file)) {
-        fs.unlink(file, err => {
+        fs.unlink(file, (err) => {
           if (err) console.log(err);
         });
         if (items[0].thumbnail !== "none") {
-          fs.unlink(`uploads/videos/thumbnails/${items[0].thumbnail}`, err => {
-            console.log(err);
-          });
+          fs.unlink(
+            `uploads/videos/thumbnails/${items[0].thumbnail}`,
+            (err) => {
+              console.log(err);
+            }
+          );
         }
-        fileModel.deleteOne({ _id: req.params.id }, err => {
+        fileModel.deleteOne({ _id: req.params.id }, (err) => {
           if (!err) {
             res.status(200).send({ status: "file removed successfully" });
           }
         });
       } else {
-        fileModel.deleteOne({ _id: req.params.id }, err => {
+        fileModel.deleteOne({ _id: req.params.id }, (err) => {
           if (!err) {
             res.status(200).send({ status: "file removed successfully" });
           }
@@ -477,7 +504,7 @@ export const deleteSubtitleController = (req, res) => {
         console.log(items);
         var file = items.subtitlePath;
         if (fs.existsSync(file)) {
-          fs.unlink(file, err => {
+          fs.unlink(file, (err) => {
             if (err) console.log(err);
             else
               res.status(200).send({ status: "subtitle removed successfully" });
@@ -498,10 +525,10 @@ export const deleteAllFilesController = async (req, res) => {
     "uploads/others",
     "uploads/videos/thumbnails",
     "uploads/videos/subtitles/vtt",
-    "uploads/videos/subtitles/vtt"
+    "uploads/videos/subtitles/vtt",
   ];
 
-  directories.map(item => {
+  directories.map((item) => {
     fs.readdir(item, async (err, files) => {
       if (err) console.log(err);
 
@@ -511,7 +538,7 @@ export const deleteAllFilesController = async (req, res) => {
         if (file === "srt") continue;
         if (file === "vtt") continue;
         if (fs.existsSync(path.join(item, file))) {
-          await fs.unlink(path.join(item, file), err => {
+          await fs.unlink(path.join(item, file), (err) => {
             if (err) console.log(err);
           });
         }
@@ -519,7 +546,7 @@ export const deleteAllFilesController = async (req, res) => {
     });
   });
 
-  await fileModel.deleteMany({}, err => {
+  await fileModel.deleteMany({}, (err) => {
     if (err) res.send({ status: false });
     else res.send({ status: true });
   });
@@ -568,14 +595,14 @@ export const streamContentController = (req, res) => {
       "Content-Range": `bytes ${start}-${end}/${fileSize}`,
       "Accept-Ranges": "bytes",
       "Content-Length": chunksize,
-      "Content-Type": mimeType
+      "Content-Type": mimeType,
     };
     res.writeHead(206, head);
     file.pipe(res);
   } else {
     const head = {
       "Content-Length": fileSize,
-      "Content-Type": mimeType
+      "Content-Type": mimeType,
     };
     res.writeHead(200, head);
     fs.createReadStream(path).pipe(res);

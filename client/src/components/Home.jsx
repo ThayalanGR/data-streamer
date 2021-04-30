@@ -1,31 +1,63 @@
-import React, { Component } from "react";
-import "../css/home.css";
+import React, { Component, Fragment } from "react";
+import Spinner from "./Spinner";
+import VideoThumb from "./VideoThumb";
+import constants from "./constants";
 
-export default class Home extends Component {
+class Home extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      isLoading: true,
+      content: [],
+    };
+
+    this.initialFetch = this.initialFetch.bind(this);
   }
+
+  componentWillMount() {
+    this.initialFetch();
+  }
+
+  initialFetch() {
+    fetch(`${constants.baseUrl}/fetchallvideos`)
+      .then((data) => data.json())
+      .then((data) => {
+        this.setState({ content: data });
+      });
+  }
+
+  componentDidMount() {
+    this.setState({ isLoading: false });
+  }
+
   render() {
-    return (
-      <div className="home-wrapper">
-        <div className="home-navbar">
-          <div className="base-color welcome-user">
-            <p>Hi {this.props.userDetails.name} !</p>
-          </div>
-          <div className="nav-logo">
-            <i className="base-color fas fa-fire"></i>
-          </div>
-          <div className="nav-logout">
-            <i className="fas fa-sign-out-alt danger"></i>
+    return this.state.isLoading ? (
+      <Spinner size={{ size: "small" }} />
+    ) : (
+      <Fragment>
+        <div className="container-fluid p-5 mt-4">
+          <div className="row">
+            {this.state.content.map((item, index) => (
+              <VideoThumb key={index} content={item} />
+            ))}
+            {this.state.content.length === 0 && (
+              <div
+                style={{
+                  width: "100%",
+                  height: "70vh",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                Upload / download / stream videos
+              </div>
+            )}
           </div>
         </div>
-        <div className="home-content">
-          <div>Your Ideas!</div>
-          <div className="your-ideas-content"></div>
-          <div className="your-contributions-content"></div>
-        </div>
-      </div>
+      </Fragment>
     );
   }
 }
+
+export default Home;

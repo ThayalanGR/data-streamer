@@ -1,8 +1,6 @@
 import mongoose, {
     Schema
 } from 'mongoose';
-import crypto from 'crypto';
-import jwt from 'jsonwebtoken';
 
 const fileSchema = Schema({
     fileName: {
