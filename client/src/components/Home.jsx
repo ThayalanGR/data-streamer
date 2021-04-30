@@ -1,18 +1,17 @@
 import React, { Component, Fragment } from "react";
 import Spinner from "./Spinner";
 import VideoThumb from "./VideoThumb";
-import constants from './constants';
+import constants from "./constants";
 
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoading: true,
-      content: []
-    }
+      content: [],
+    };
 
     this.initialFetch = this.initialFetch.bind(this);
-
   }
 
   componentWillMount() {
@@ -21,10 +20,10 @@ class Home extends Component {
 
   initialFetch() {
     fetch(`${constants.baseUrl}/fetchallvideos`)
-      .then(data => data.json())
-      .then(data => {
-        this.setState({ content: data })
-      })
+      .then((data) => data.json())
+      .then((data) => {
+        this.setState({ content: data });
+      });
   }
 
   componentDidMount() {
@@ -35,16 +34,29 @@ class Home extends Component {
     return this.state.isLoading ? (
       <Spinner size={{ size: "small" }} />
     ) : (
-        <Fragment>
-          <div className="container-fluid p-5 mt-4">
-            <div className="row">
-              {this.state.content.map((item, index) => (
-                <VideoThumb key={index} content={item} />
-              ))}
-            </div>
+      <Fragment>
+        <div className="container-fluid p-5 mt-4">
+          <div className="row">
+            {this.state.content.map((item, index) => (
+              <VideoThumb key={index} content={item} />
+            ))}
+            {this.state.content.length === 0 && (
+              <div
+                style={{
+                  width: "100%",
+                  height: "70vh",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                Upload / download / stream videos
+              </div>
+            )}
           </div>
-        </Fragment>
-      );
+        </div>
+      </Fragment>
+    );
   }
 }
 

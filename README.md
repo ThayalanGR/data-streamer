@@ -1,61 +1,61 @@
-# ***Data-streaming-applicaton***
+# **_Data-streaming-applicaton_**
 
 **nodejs server and multiple front end Data streaming application**
 
+## **_Developer Api Docs_**
 
+> [DataStreamer API Docs](https://github.com/ThayalanGR/data-streamer/blob/master/API_DOCS.md)
 
-## ***Developer Api Docs***
+---
 
->[DataStreamer API Docs](https://github.com/ThayalanGR/data-streamer/blob/master/API_DOCS.md)
+> Datastreamer needs FFmpeg to be installed to process and stream videos
+> [Install FFmpeg](https://www.ffmpeg.org/)
 
-----------
+## **_Installation_**
 
+---
 
-
-## ***Installation***
-***
 1. Clone this repository using the following command
-~~~ 
+
+```
 git clone https://github.com/ThayalanGR/data-streamer.git
-~~~
+```
+
 2. Traverse into local-video-streaming-application directory
-~~~ 
+
+```
 cd data-streamer
-~~~
+```
 
-3. Install the application by execting the shell script 
-~~~
+3. Install the application by execting the shell script
+
+```
 .\install.sh
-~~~
+```
 
-4. start the application using the following shell script
-~~~
-.\start.sh
-~~~
+### **_Contributing to this repsitory_**
 
-
-### ***Contributing to this repsitory*** 
 > fork the repository
-    
-> add features 
+
+> add features
 
 > push into your forked repository
 
-> make ***pull request*** to this master repository 
+> make **_pull request_** to this master repository
 
+### **_reporting issues_**
 
-### ***reporting issues*** 
 > go to https://github.com/ThayalanGR/data-streamer/issues
 
-> open new issues using ***New Issue*** button
-    
-> mention the steps to __reproduce__ the issue in ***comment section***
+> open new issues using **_New Issue_** button
 
+> mention the steps to **reproduce** the issue in **_comment section_**
 
-### ***Support this Project*** 
-> give ***star*** to this project 
+### **_Support this Project_**
 
-> follow me on ***social medias***
+> give **_star_** to this project
+
+> follow me on **_social medias_**
 
 [![alt text][1.1]][1]
 [![alt text][2.1]][2]
@@ -63,15 +63,11 @@ cd data-streamer
 [![alt text][5.1]][5]
 [![alt text][6.1]][6]
 
-
-
-
-[1.1]: http://i.imgur.com/tXSoThF.png (twitter icon with padding)
-[2.1]: http://i.imgur.com/P3YfQoD.png (facebook icon with padding)
-[4.1]: http://i.imgur.com/YckIOms.png (tumblr icon with padding)
-[5.1]: http://i.imgur.com/1AGmwO3.png (dribbble icon with padding)
-[6.1]: http://i.imgur.com/0o48UoR.png (github icon with padding)
-
+[1.1]: http://i.imgur.com/tXSoThF.png "twitter icon with padding"
+[2.1]: http://i.imgur.com/P3YfQoD.png "facebook icon with padding"
+[4.1]: http://i.imgur.com/YckIOms.png "tumblr icon with padding"
+[5.1]: http://i.imgur.com/1AGmwO3.png "dribbble icon with padding"
+[6.1]: http://i.imgur.com/0o48UoR.png "github icon with padding"
 
 <!-- links to your social media accounts -->
 <!-- update these accordingly -->

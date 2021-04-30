@@ -17,7 +17,7 @@ echo " "
 
 echo "installing Data streamer web client's necessary packages... "
 
-cd ./web_client
+cd ./client
 
 npm install
 
