@@ -6,8 +6,7 @@
 
 ## ***Developer Api Docs***
 
->[DataStreamer API Docs](https://github.com/ThayalanGR/data-streamer/blob/master/API_DOCS.md)
-
+>[DataStreamer API Docs](https://github.com/ThayalanGR/data-streamer/blob/master/server/API_DOCS.md)
 ----------
 
 
